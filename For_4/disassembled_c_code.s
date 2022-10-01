@@ -1,24 +1,24 @@
-; описание некоторой информации о программе, вроде
-; названия, форматной строки для ввода-вывода и пр.
+# описание некоторой информации о программе, вроде
+# названия, форматной строки для ввода-вывода и пр.
         .file   "IHW.c"
         .text
         .section        .rodata
 .LC0:
         .string "%d"
         .text
-        ; описание функции input()
+        # описание функции input()
         .globl  input
         .type   input, @function
 input:
         endbr64
-        pushq   %rbp ; пролог функции
+        pushq   %rbp # пролог функции
         movq    %rsp, %rbp
         subq    $32, %rsp
         movq    %rdi, -24(%rbp)
         movl    %esi, -28(%rbp)
         movl    $0, -4(%rbp)
-        jmp     .L2 ; заход в цикл
-.L3: ; тело цикла
+        jmp     .L2 # заход в цикл
+.L3: # тело цикла
         movl    -4(%rbp), %eax
         cltq
         leaq    0(,%rax,4), %rdx
@@ -29,29 +29,29 @@ input:
         movl    $0, %eax
         call    __isoc99_scanf@PLT
         addl    $1, -4(%rbp)
-.L2: ; проверка условия
+.L2: # проверка условия
         movl    -4(%rbp), %eax
-        cmpl    -28(%rbp), %eax ; сравнение i
+        cmpl    -28(%rbp), %eax # сравнение i
         jl      .L3
         nop
         nop
-        leave ; эпилог функции
+        leave # эпилог функции
         ret
         .size   input, .-input
-        ; описание функции make_new_array
+        # описание функции make_new_array
         .globl  make_new_array
         .type   make_new_array, @function
 make_new_array:
         endbr64
-        pushq   %rbp ; пролог функции
+        pushq   %rbp # пролог функции
         movq    %rsp, %rbp
         movq    %rdi, -24(%rbp)
         movq    %rsi, -32(%rbp)
         movl    %edx, -36(%rbp)
         movl    $0, -16(%rbp)
         movl    $0, -12(%rbp)
-        jmp     .L5 ; заход в цикл
-.L7: ; тело первого цикла
+        jmp     .L5 # заход в цикл
+.L7: # тело первого цикла
         movl    -12(%rbp), %eax
         cltq
         leaq    0(,%rax,4), %rdx
@@ -66,17 +66,17 @@ make_new_array:
         movl    %eax, (%rdx)
         addl    $2, -12(%rbp)
         addl    $1, -16(%rbp)
-.L5: ; проверка условий
+.L5: # проверка условий
         movl    -36(%rbp), %eax
         addl    $1, %eax
         movl    %eax, %edx
         shrl    $31, %edx
         addl    %edx, %eax
         sarl    %eax
-        cmpl    %eax, -16(%rbp) ; сравнение i
+        cmpl    %eax, -16(%rbp) # сравнение i
         jge     .L6
         movl    -12(%rbp), %eax
-        cmpl    -36(%rbp), %eax; сравнение j
+        cmpl    -36(%rbp), %eax# сравнение j
         jl      .L7
 .L6:
         movl    -36(%rbp), %eax
@@ -88,7 +88,7 @@ make_new_array:
         movl    %eax, -8(%rbp)
         movl    $1, -4(%rbp)
         jmp     .L8
-.L10: ; тело второго цикла
+.L10: # тело второго цикла
         movl    -4(%rbp), %eax
         cltq
         leaq    0(,%rax,4), %rdx
@@ -103,31 +103,31 @@ make_new_array:
         movl    %eax, (%rdx)
         addl    $2, -4(%rbp)
         addl    $1, -8(%rbp)
-.L8: ; проверка условий
+.L8: # проверка условий
         movl    -8(%rbp), %eax
-        cmpl    -36(%rbp), %eax ; сравнение i
+        cmpl    -36(%rbp), %eax # сравнение i
         jge     .L11
         movl    -4(%rbp), %eax
-        cmpl    -36(%rbp), %eax ; сравнение j
+        cmpl    -36(%rbp), %eax # сравнение j
         jl      .L10
 .L11:
         nop
-        popq    %rbp ; эпилог функции
+        popq    %rbp # эпилог функции
         ret
         .size   make_new_array, .-make_new_array
-        ; описание функции output
+        # описание функции output
         .globl  output
         .type   output, @function
 output:
         endbr64
-        pushq   %rbp ; эпилог функции
+        pushq   %rbp # эпилог функции
         movq    %rsp, %rbp
         subq    $32, %rsp
         movq    %rdi, -24(%rbp)
         movl    %esi, -28(%rbp)
         movl    $0, -4(%rbp)
         jmp     .L13
-.L16: ; тело цикла
+.L16: # тело цикла
         movl    -4(%rbp), %eax
         cltq
         leaq    0(,%rax,4), %rdx
@@ -150,21 +150,21 @@ output:
         call    putchar@PLT
 .L15:
         addl    $1, -4(%rbp)
-.L13: ; проверка условия
+.L13: # проверка условия
         movl    -4(%rbp), %eax
-        cmpl    -28(%rbp), %eax; сравнение i
+        cmpl    -28(%rbp), %eax# сравнение i
         jl      .L16
         nop
         nop
-        leave ; эпилог функции
+        leave # эпилог функции
         ret
         .size   output, .-output
-        ; описание функции main
+        # описание функции main
         .globl  main
         .type   main, @function
 main:
         endbr64
-        pushq   %rbp ; пролог функции
+        pushq   %rbp # пролог функции
         movq    %rsp, %rbp
         pushq   %r15
         pushq   %r14
@@ -181,7 +181,7 @@ main:
         movq    %rax, %rsi
         leaq    .LC0(%rip), %rdi
         movl    $0, %eax
-        call    __isoc99_scanf@PLT ; считывание n
+        call    __isoc99_scanf@PLT # считывание n
         movl    -92(%rbp), %eax
         movslq  %eax, %rdx
         subq    $1, %rdx
@@ -273,8 +273,8 @@ main:
         addq    %rsp, %rax
         orq     $0, (%rax)
 .L23:
-        ; вызов самописных функций, выше - 
-        ; служебное, scanf и создание массивов
+        # вызов самописных функций, выше - 
+        # служебное, scanf и создание массивов
         movq    %rsp, %rax
         addq    $3, %rax
         shrq    $2, %rax
@@ -303,7 +303,7 @@ main:
         je      .L25
         call    __stack_chk_fail@PLT
 .L25:
-        leaq    -40(%rbp), %rsp ; эпилог функции
+        leaq    -40(%rbp), %rsp # эпилог функции
         popq    %rbx
         popq    %r12
         popq    %r13
