@@ -76,7 +76,7 @@ make_new_array:
         cmpl    %eax, -16(%rbp) # сравнение i
         jge     .L6
         movl    -12(%rbp), %eax
-        cmpl    -36(%rbp), %eax# сравнение j
+        cmpl    -36(%rbp), %eax # сравнение j
         jl      .L7
 .L6:
         movl    -36(%rbp), %eax
@@ -152,7 +152,7 @@ output:
         addl    $1, -4(%rbp)
 .L13: # проверка условия
         movl    -4(%rbp), %eax
-        cmpl    -28(%rbp), %eax# сравнение i
+        cmpl    -28(%rbp), %eax # сравнение i
         jl      .L16
         nop
         nop
