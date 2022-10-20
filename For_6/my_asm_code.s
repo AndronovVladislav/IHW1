@@ -71,8 +71,8 @@ output:
                 call    printf@PLT
 
         addq    $32, %rsp
-        pop     %rax
         popq    %rbx
+        popq    %rax
         leave
         ret
         .size   output, .-output
