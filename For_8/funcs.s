@@ -44,9 +44,9 @@ input:
         ret
         .size   input, .-input
 
-        .globl  output
-        .type   output, @function
-output:
+        .globl  output_in_file
+        .type   output_in_file, @function
+output_in_file:
         pushq   %rbp
         movq    %rsp, %rbp
         pushq   %rax
@@ -85,7 +85,7 @@ output:
         popq    %rax
         leave
         ret
-        .size   output, .-output
+        .size   output_in_file, .-output_in_file
 
         .globl  make_new_array
         .type   make_new_array, @function
@@ -224,7 +224,7 @@ start_with_prepared_file:
 
         movq    %rbx, %rdi
         movq    (%rsp), %rsi
-        call    output
+        call    output_in_file
 
         movq    %r14, %rdi
         call    fclose@PLT
@@ -245,46 +245,34 @@ start_with_prepared_file:
 	.globl  generate_random_test
         .type   generate_random_test, @function
 generate_random_test:
-	pushq	%rbp
-	movq	%rsp, %rsp
+	pushq 	%rbp
+	movq 	%rsp, %rbp
 
-	pushq	%rbx
-	pushq	%r12
-	#subq	$8, %rsp
+	pushq 	%rbx
+	pushq 	%r14
+	pushq 	%r15
 
-	# n = random() % 10	
-	#call 	generate_random_int	
-	#movq	%rax, %rcx
+	subq 	$24, %rsp
 
-	#shlq	$3, %rax
-	#movq	%rax, %rdi
-
-	# allocate memory for array of n elements
-	#movq	%rcx, (%rsp)
-	#call 	malloc@PLT
-	#movq    (%rsp), %rcx
-
-	movq	%rdi, %rbx
-	movq	%rsi, %r12	
-
-	#movq    %rax, %rbx
-	movq    $0, %rdx
-	.fill_array:
-		cmp	%rdx, %r12
-		je	.end_of_generation
-		call	generate_random_int
-		movq 	%rax, (%rbx, %rdx, 8)
-		incq	%rdx
-		jmp 	.fill_array
+	movq 	%rdi, %r14
+	movq 	%rsi, %r15
+	xorq 	%rbx, %rbx
+	.filling:
+		cmp 	%rbx, %r15
+		je 	.end_of_generation
+		call 	generate_random_int@PLT
+		movq 	%rax, (%r14, %rbx, 8)
+		incq 	%rbx
+		jmp 	.filling
 
 	.end_of_generation:
-		#movq	%rbx, %rax
+	addq 	$24, %rsp
+	popq 	%r15
+	popq 	%r14
+	popq 	%rbx
 
-		popq	%r12
-		popq 	%rbx
-		
-		leave
-		ret
+	leave
+	ret
 	.size	generate_random_test, .-generate_random_test	
 
         .globl  generate_random_int
@@ -293,22 +281,136 @@ generate_random_int:
 	pushq	%rbp
 	movq	%rsp, %rbp
 	
+	pushq	%rbx
 	pushq	%rdx
 	pushq	%rcx
 
-	subq	$8, %rsp
+	subq	$24, %rsp
 	# возможно segfault из-за выравнивания
 
         xorq    %rax, %rax
         call    rand@PLT
         xorq    %rdx, %rdx
-        movq	$10, %rcx
+        movq	$100, %rcx
 	idiv    %rcx
         movq    %rdx, %rax
 	
+	addq	$24, %rsp
 	popq	%rcx
 	popq	%rdx
+	popq	%rbx
 
 	leave
     	ret
 	.size   generate_random_int, .-generate_random_int
+
+	.globl	output_in_terminal
+	.type	output_in_terminal, @function
+output_in_terminal:
+	pushq   %rbp
+        movq    %rsp, %rbp
+        
+	pushq   %rax
+        pushq   %rbx
+
+        subq    $32, %rsp
+
+        movq    %rdi, (%rsp)
+        movq    %rsi, 8(%rsp)
+
+        movq    $0, %rbx
+        .print1:
+                movq   (%rsp), %rax
+                leaq   .LC0(%rip), %rdi
+                movq   (%rax, %rbx, 8), %rsi
+                call   printf@PLT
+
+                incq    %rbx
+                cmp     %rbx, 8(%rsp)
+                je      .end_of_print1
+                leaq    .LC1(%rip), %rdi
+                call    printf@PLT
+                cmp     %rbx, 8(%rsp)
+                ja      .print1
+
+        .end_of_print1:
+                leaq    .LC2(%rip), %rdi
+                call    printf@PLT
+
+        addq    $32, %rsp
+        popq    %rbx
+        popq    %rax
+        leave
+        ret
+	.size 	output_in_terminal, .-output_in_terminal
+
+	.globl	start_with_random
+	.type	start_with_random, @function
+start_with_random:
+	pushq	%rbp
+	movq	%rsp, %rbp
+
+        pushq   %rbx
+        pushq   %r12
+        pushq   %r13
+        subq    $24, %rsp
+
+        xorq    %rdi, %rdi
+        #xor     rax, rax
+        call    time@PLT
+
+        movq     %rax, %rdi
+        #xor     rax, rax
+        call    srand@PLT
+
+        call    generate_random_int@PLT
+        movq    %rax, %rbx
+
+        shlq    $3, %rax
+
+        movq    %rax, %rdi
+        call    malloc@PLT
+        movq    %rax, %r12
+
+        movq    %r12, %rdi
+        movq    %rbx, %rsi
+        call    generate_random_test@PLT
+
+        movq    %rbx, %rax
+        shlq    $3, %rax
+
+        movq    %rax, %rdi
+        call    malloc@PLT
+        movq    %rax, %r13
+
+        # rbx = n
+        # r12 = old_array
+        # r13 = new_array
+        movq    %r12, %rdi
+        movq    %r13, %rsi
+        movq    %rbx, %rdx
+
+        call    make_new_array
+
+	movq	%r12, %rdi
+	movq	%rbx, %rsi
+	call	output_in_terminal
+
+        movq    %r13, %rdi
+        movq    %rbx, %rsi
+        call    output_in_terminal
+
+        movq    %r12, %rdi
+        call    free@PLT
+
+        movq    %r13, %rdi
+        call    free@PLT
+
+        addq    $24, %rsp
+        popq    %r13
+        popq    %r12
+        popq    %rbx
+
+	leave
+	ret
+	.size   start_with_random, .-start_with_random
