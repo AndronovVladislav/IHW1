@@ -290,9 +290,9 @@ main:
         movq    %rax, %rdi # загрузка адреса начала массива old_array в регистр rdi
         call    input # вызов функции input, она void, поэтому ничего не возвращает
 
-        movl    -92(%rbp), %edx # загрузка значения переменной n в регистр rdi
-        movq    -64(%rbp), %rcx
-        movq    -80(%rbp), %rax # загрузка адреса начала массива old_array в регистр rdi
+        movl    -92(%rbp), %edx # загрузка значения переменной n в регистр edx
+        movq    -64(%rbp), %rcx # загрузка адреса начала массива new_array в регистр rcx
+        movq    -80(%rbp), %rax # загрузка адреса начала массива old_array в регистр rax
         movq    %rcx, %rsi # загрузка адреса начала массива new_array в регистр rsi
         movq    %rax, %rdi # загрузка адреса начала массива old_array в регистр rdi
         call    make_new_array # вызов функции make_new_array, она void, поэтому ничего не возвращает
