@@ -285,11 +285,11 @@ main:
         movl    %edx, %esi
         movq    %rax, %rdi
         call    input
-        movl    -92(%rbp), %edx
-        movq    -64(%rbp), %rcx
-        movq    -80(%rbp), %rax
-        movq    %rcx, %rsi
-        movq    %rax, %rdi
+        movl    -92(%rbp), %edx         # 
+        movq    -64(%rbp), %rcx         # из данного куска кода видим, что в -92(%rbp) лежала переменная n,
+        movq    -80(%rbp), %rax         # в -64(%rbp) - new_array
+        movq    %rcx, %rsi              # в -80(%rbp) - old_array
+        movq    %rax, %rdi              #
         call    make_new_array
         movl    -92(%rbp), %edx
         movq    -64(%rbp), %rax
