@@ -18,8 +18,8 @@ input:
 
         subq    $32, %rsp
 
-        movq    %rdi, (%rsp)
-        movq    %rsi, 8(%rsp)
+        movq    %rdi, (%rsp)                            # с этого момента и до конца функции всякое обращение к (%rsp) эквивалентно обращению к параметру array
+        movq    %rsi, 8(%rsp)                           # с этого момента и до конца функции всякое обращение к 8(%rsp) эквивалентно обращению к параметру size
 
         movq    $0, %rbx
         .scan:
@@ -48,8 +48,8 @@ output:
 
         subq    $32, %rsp
 
-        movq    %rdi, (%rsp)
-        movq    %rsi, 8(%rsp)
+        movq    %rdi, (%rsp)                            # с этого момента и до конца функции всякое обращение к (%rsp) эквивалентно обращению к параметру array
+        movq    %rsi, 8(%rsp)                           # с этого момента и до конца функции всякое обращение к 8(%rsp) эквивалентно обращению к параметру size
 
         movq    $0, %rbx
         .print:
@@ -89,9 +89,9 @@ make_new_array:
 
         subq    $40, %rsp
 
-        movq    %rdi, (%rsp)
-        movq    %rsi, 8(%rsp)
-        movq    %rdx, 16(%rsp)
+        movq    %rdi, (%rsp)                            # с этого момента и до конца функции всякое обращение к (%rsp) эквивалентно обращению к параметру old_array
+        movq    %rsi, 8(%rsp)                           # с этого момента и до конца функции всякое обращение к 8(%rsp) эквивалентно обращению к параметру new_array
+        movq    %rdx, 16(%rsp)                          # с этого момента и до конца функции всякое обращение к 16(%rsp) эквивалентно обращению к параметру size
 
         movq    %rdx, %r14
         movq    %rdx, %r15 ; r15 = size
@@ -151,13 +151,13 @@ main:
         subq    $72, %rsp
 
         leaq    .LC0(%rip), %rdi # "%d" -> rdi
-        leaq    (%rsp), %rsi
+        leaq    (%rsp), %rsi                            # после выполнения scanf на (%rsp) будет лежать переменная n
         call    __isoc99_scanf@PLT
 
         movq    (%rsp), %rcx
         shlq    $3, %rcx
 
-        movq    %rcx, %rdi
+        movq    %rcx, %rdi                              # передаём в malloc n * sizeof(int)
         call    malloc@PLT
         movq    %rax, %rbx
 
@@ -168,23 +168,23 @@ main:
         call    malloc@PLT
         xchgq   %rax, %rbx
 
-        movq    %rax, %rdi
-        movq    (%rsp), %rsi
+        movq    %rax, %rdi                              # передаём в input адрес массива old_array
+        movq    (%rsp), %rsi                            # передаём в input перемменную n
         call    input
 
-        movq    %rax, %rdi
-        movq    %rbx, %rsi
-        movq    (%rsp), %rdx
+        movq    %rax, %rdi                              # передаём в input адрес массива old_array
+        movq    %rbx, %rsi                              # передаём в input адрес массива new_array
+        movq    (%rsp), %rdx                            # передаём в input перемменную n
         call    make_new_array
 
-        movq    %rbx, %rdi
-        movq    (%rsp), %rsi
+        movq    %rbx, %rdi                              # передаём в input адрес массива new_array
+        movq    (%rsp), %rsi                            # передаём в input перемменную n
         call    output
 
-        movq    %rax, %rdi
+        movq    %rax, %rdi                              # передаём в input адрес массива old_array
         call    free@PLT
 
-        movq    %rbx, %rdi
+        movq    %rbx, %rdi                              # передаём в input адрес массива new_array
         call    free@PLT
 
         addq    $72, %rsp
