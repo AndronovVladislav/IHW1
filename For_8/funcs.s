@@ -22,7 +22,10 @@ input:
         pushq   %rbx
         subq    $32, %rsp
 
-        movq    %rdi, (%rsp)
+	cmp	$0, %rsi        
+	je	.end_of_input
+
+	movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
 
         movq    $0, %rbx
@@ -36,11 +39,12 @@ input:
                 incq    %rbx
                 cmpq    %rbx, 8(%rsp)
                 ja      .scan
-
+	.end_of_input:
         addq    $32, %rsp
         popq    %rbx
         popq    %rax
-        leave
+        movq	%rbp, %rsp
+	popq	%rbp
         ret
         .size   input, .-input
 
@@ -52,6 +56,9 @@ output_in_file:
         pushq   %rax
         pushq   %rbx
         subq    $32, %rsp
+
+	cmp 	$0, %rsi
+	je	.end_of_print
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -83,7 +90,8 @@ output_in_file:
         addq    $32, %rsp
         popq    %rbx
         popq    %rax
-        leave
+        mov	%rbp, %rsp
+	popq	%rbp
         ret
         .size   output_in_file, .-output_in_file
 
@@ -99,6 +107,9 @@ make_new_array:
         pushq   %r13
 
         subq    $40, %rsp
+
+	cmp	$0, %rdx
+	je	.end
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -146,7 +157,8 @@ make_new_array:
                 popq    %r15
                 popq    %rbx
                 popq    %rax
-                leave
+                movq	%rbp, %rsp
+		popq	%rbp
                 ret
         .size   make_new_array, .-make_new_array
 
@@ -238,7 +250,8 @@ start_with_prepared_file:
         popq    %r13
         popq    %r14
         popq    %r15
-	leave
+	movq	%rbp, %rsp
+	popq	%rbp
 	ret
         .size	start_with_prepared_file, .-start_with_prepared_file
 
@@ -271,7 +284,8 @@ generate_random_test:
 	popq 	%r14
 	popq 	%rbx
 
-	leave
+	movq	%rbp, %rsp
+	popq	%rbp
 	ret
 	.size	generate_random_test, .-generate_random_test	
 
@@ -286,7 +300,6 @@ generate_random_int:
 	pushq	%rcx
 
 	subq	$24, %rsp
-	# возможно segfault из-за выравнивания
 
         xorq    %rax, %rax
         call    rand@PLT
@@ -300,7 +313,8 @@ generate_random_int:
 	popq	%rdx
 	popq	%rbx
 
-	leave
+	movq	%rbp, %rsp
+	popq	%rbp
     	ret
 	.size   generate_random_int, .-generate_random_int
 
@@ -314,6 +328,9 @@ output_in_terminal:
         pushq   %rbx
 
         subq    $32, %rsp
+
+	cmp	$0, %rsi
+	je	.end_of_print1
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -340,7 +357,8 @@ output_in_terminal:
         addq    $32, %rsp
         popq    %rbx
         popq    %rax
-        leave
+        movq	%rbp, %rsp
+	popq	%rbp
         ret
 	.size 	output_in_terminal, .-output_in_terminal
 
@@ -411,6 +429,7 @@ start_with_random:
         popq    %r12
         popq    %rbx
 
-	leave
+	movq	%rbp, %rsp
+	popq	%rbp
 	ret
 	.size   start_with_random, .-start_with_random

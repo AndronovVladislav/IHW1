@@ -19,5 +19,6 @@ main:
 	
 	.end_main:
 		addq	$16, %rsp
-        	leave
+        	movq	%rbp, %rsp
+		popq	%rbp
 		ret

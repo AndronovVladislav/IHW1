@@ -35,7 +35,8 @@ input:
         jl      .L3
         nop
         nop
-        leave # эпилог функции
+        movq	%rbp, %rsp # эпилог функции
+	popq	%rbp
         ret
         .size   input, .-input
         # описание функции make_new_array
@@ -156,7 +157,8 @@ output:
         jl      .L16
         nop
         nop
-        leave # эпилог функции
+        movq	%rbp, %rsp # эпилог функции
+	popq	%rbp
         ret
         .size   output, .-output
         # описание функции main

@@ -22,6 +22,9 @@ input:
         pushq   %rbx
 
         subq    $32, %rsp
+	
+	cmp	$0, %rsi
+	je	.end_of_input
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -36,11 +39,12 @@ input:
                 incq    %rbx
                 cmpq    %rbx, 8(%rsp)
                 ja      .scan
-
+	.end_of_input:
         addq    $32, %rsp
         popq    %rbx
         popq    %rax
-        leave
+        movq	%rbp, %rsp
+	popq	%rbp
         ret
         .size   input, .-input
         .globl  output
@@ -52,6 +56,9 @@ output:
         pushq   %rbx
 
         subq    $32, %rsp
+
+	cmp	$0, %rsi
+	je	.end_of_print
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -78,7 +85,8 @@ output:
         addq    $32, %rsp
         popq    %rbx
         popq    %rax
-        leave
+        movq	%rbp, %rsp
+	popq	%rbp
         ret
         .size   output, .-output
         .globl  make_new_array
@@ -93,6 +101,9 @@ make_new_array:
         pushq   %r13
 
         subq    $40, %rsp
+
+	cmp	$0, %rdx
+	je 	.end
 
         movq    %rdi, (%rsp)
         movq    %rsi, 8(%rsp)
@@ -140,7 +151,8 @@ make_new_array:
                 popq    %r15
                 popq    %rbx
                 popq    %rax
-                leave
+                movq	%rbp, %rsp
+		popq	%rbp
                 ret
         .size   make_new_array, .-make_new_array
         .globl  main

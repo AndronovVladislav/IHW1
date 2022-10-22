@@ -21,7 +21,7 @@ main:
         subq    $72, %rsp
 
         movq    %rdi, %r12               # перенос в регистр, неизменяемый printf
-        movq    %rsi, %r13               # rsi содержи адресс массива аргументов
+        movq    %rsi, %r13               # rsi содержит адрес массива аргументов
 
         mov     8(%rsi), %rdi
         lea     .read(%rip), %rsi
@@ -94,5 +94,7 @@ main:
         popq    %r13
         popq    %r14
         popq    %r15
-        leave
+        movq	%rbp, %rsp
+	popq	%rbp
         ret
+
