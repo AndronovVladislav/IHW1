@@ -169,8 +169,8 @@ main:
         movq    (%rsp), %rcx
         shlq    $3, %rcx
 
-        movq    %rcx, %rdi                              # передаём в malloc n * sizeof(int)
-        call    malloc@PLT
+        movq    %rcx, %rdi                              # передаём в malloc 2 * n * sizeof(int) (sizeof(int) = 4. Умножаем на 2, чтобы
+        call    malloc@PLT				# нормально работать с 64-битными регистрами)
         movq    %rax, %rbx
 
         movq    (%rsp), %rcx
